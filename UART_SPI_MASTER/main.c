@@ -1,21 +1,22 @@
 #include "STD_TYPES.h"
 #include "BIT_MATH.h"
 #include "Compiler.h"
-#include "DIO_interface.h"
-#include "led_interface.h"
-#include "led_precfg.h"
 #include "LCD_interface.h"
 #include "LCD_PreCFG.h"
 #include "UART_interface.h"
 #include "UART_Cfg.h"
 #include "SPI_interface.h"
 #include "SPI_Cfg.h"
-//#include <avr/delay.h>
-//#include "avr/io.h"
+#include <avr/delay.h>
+#include "avr/io.h"
 
-int main (){
+	int main ()
 
-	uint8_t Data_Sent , loop = 0 ;
+   {
+
+	uint8_t Data_Sent , loop1 = 0 ;
+
+	uint8_t loop2=0;
 
 	uint8_t Data_Recieved = 0;
 
@@ -35,26 +36,67 @@ int main (){
 
     HAL_LCD_voidInit();
 
-	DIO_LED_VOIDINIT();
 
-		while(Data_UART[loop] != '\0')
+		while(Data_UART[loop1] != '\0')
 		{
-			MCAL_UART_sendByteBusyWait(Data_UART[loop]);
+			MCAL_UART_sendByteBusyWait(Data_UART[loop1]);
 
-			loop ++ ;
+			loop1 ++ ;
 		}
 
-	while (1)
-	{
+		while (1)
+		{
 
 			MCAL_UART_recieveByteBusyWait(&Data_Sent);
 
-			if ((Data_Sent>='0'&&Data_Sent<='9')|| (Data_Sent>='A'&&Data_Sent<='Z')||(Data_Sent>='a'&&Data_Sent<='z')){
+			if ((Data_Sent>='0'&&Data_Sent<='9')|| (Data_Sent>='A'&&Data_Sent<='Z')||(Data_Sent>='a'&&Data_Sent<='z'))
+			{
 
-				HAL_LCD_voidWriteCharacter((uint8_t)Data_Sent);
+				if (loop2<=15)
+				{
 
-				MCAL_SPI_Master_DataBusyWait(Data_Sent, &Data_Recieved);
+					HAL_LCD_MoveCursor(0 , loop2);
+
+					HAL_LCD_voidWriteCharacter((uint8_t)Data_Sent);
+
+					MCAL_SPI_Master_DataBusyWait(Data_Sent, &Data_Recieved);
+
+					loop2++;
+
+				}
+
+				else if ((loop2>15)&&(loop2<32))
+				{
+					HAL_LCD_MoveCursor(1 , (loop2-16));
+
+					HAL_LCD_voidWriteCharacter((uint8_t)Data_Sent);
+
+					MCAL_SPI_Master_DataBusyWait(Data_Sent, &Data_Recieved);
+
+					loop2++;
+
+				}
+				else
+				{
+					HAL_LCD_voidClearAll();
+
+					loop2=0;
+
+					HAL_LCD_MoveCursor(0 , loop2);
+
+					HAL_LCD_voidWriteCharacter((uint8_t)Data_Sent);
+
+					MCAL_SPI_Master_DataBusyWait(Data_Sent, &Data_Recieved);
+
+					loop2++;
+
+				}
+			}
+			else
+			{
+
+			}
+
 		}
-	}
-}
+   }
 

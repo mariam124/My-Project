@@ -8,7 +8,6 @@ C_SRCS += \
 ../LCD_program.c \
 ../SPI_program.c \
 ../UART_program.c \
-../led_program.c \
 ../main.c 
 
 OBJS += \
@@ -16,7 +15,6 @@ OBJS += \
 ./LCD_program.o \
 ./SPI_program.o \
 ./UART_program.o \
-./led_program.o \
 ./main.o 
 
 C_DEPS += \
@@ -24,7 +22,6 @@ C_DEPS += \
 ./LCD_program.d \
 ./SPI_program.d \
 ./UART_program.d \
-./led_program.d \
 ./main.d 
 
 
